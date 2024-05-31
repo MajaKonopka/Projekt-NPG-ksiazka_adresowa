@@ -1,5 +1,8 @@
+from ContactsBook import ContactsBook
+
+
 def main():
-    print("Hello world")
+    book = ContactsBook()
 
 if __name__ == '__main__':
     main()
