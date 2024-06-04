@@ -26,6 +26,11 @@ class ContactsBook:
         self.manageContactPage = Frame(self.rootMain)
         self.manageContactPage.pack()
 
+        # utworzenie miejsca na liste kontaktów
+        self.contactsListbox = tk.Listbox(self.homePage)
+        self.contactsListbox.pack(padx=40, pady=40)
+        self.fillContactsListbox()
+
         add_button = tk.Button(self.homePage, text="Add Contact", command=self.addContact)
         add_button.pack(pady=10)
 
@@ -53,6 +58,7 @@ class ContactsBook:
             # Powrót do strony głównej
             self.homePage.pack()
             self.addContactPage.pack_forget()
+            self.fillContactsListbox()
             self.printContacts()
 
         # Chowanie poprzedniej strony
@@ -81,6 +87,12 @@ class ContactsBook:
 
         clear_button = tk.Button(self.addContactPage, text="Return", command=toTheHomePage)
         clear_button.grid(row=3, column=1, padx=5, pady=5)
+
+    # Zapełnienie listy kontaktów
+    def fillContactsListbox(self):
+        self.contactsListbox.delete(0, tk.END)
+        for contact in self.contactsList:
+                self.contactsListbox.insert(tk.END, f"{contact.name} {contact.surname}")
     def printContacts(self):
         for n in self.contactsList:
             print(f"{n.name} \n{n.surname}")
