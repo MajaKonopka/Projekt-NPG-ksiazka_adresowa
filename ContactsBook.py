@@ -1,8 +1,11 @@
 import tkinter as tk
 from tkinter import Frame
+from tkinter import messagebox as tkMessageBox
+from Contact import Contact
 
 class ContactsBook:
     def __init__(self):
+        self.contactsList = []
         self.createMainWindow()
 
     def createMainWindow(self):
@@ -30,13 +33,27 @@ class ContactsBook:
         self.rootMain.mainloop()
 
     def addContact(self):
+
         def submit():
-            print("submitted")
+            try:
+                # Pobieranie danych z inputów
+                name = entry1.get()
+                surname = entry2.get()
+                phoneNumber = int(entry3.get())
+
+                # Dodanie kontaktu do listy
+                self.contactsList.append(Contact(name, surname, phoneNumber))
+                print("Contact added successfully.")
+
+                toTheHomePage()
+            except:
+                tkMessageBox.showwarning("Warning", "Incorrect information")
 
         def toTheHomePage():
             # Powrót do strony głównej
             self.homePage.pack()
             self.addContactPage.pack_forget()
+            self.printContacts()
 
         # Chowanie poprzedniej strony
         self.homePage.pack_forget()
@@ -64,3 +81,6 @@ class ContactsBook:
 
         clear_button = tk.Button(self.addContactPage, text="Return", command=toTheHomePage)
         clear_button.grid(row=3, column=1, padx=5, pady=5)
+    def printContacts(self):
+        for n in self.contactsList:
+            print(f"{n.name} \n{n.surname}")
