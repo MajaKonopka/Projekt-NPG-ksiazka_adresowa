@@ -2,10 +2,12 @@ import tkinter as tk
 from tkinter import Frame
 from tkinter import messagebox as tkMessageBox
 from Contact import Contact
+import json
 
 class ContactsBook:
     def __init__(self):
-        self.contactsList = []
+        print(self.readFromFile())
+        self.contactsList = self.readFromFile()
         self.createMainWindow()
 
     def createMainWindow(self):
@@ -31,6 +33,15 @@ class ContactsBook:
         self.contactsListbox.pack(padx=40, pady=40)
         self.fillContactsListbox()
 
+        # utworzenie search bara
+        search_frame = tk.Frame(self.homePage)
+        search_frame.pack(pady=10)
+        search_label = tk.Label(search_frame, text="Search:")
+        search_label.pack(side=tk.LEFT)
+        self.search_entry = tk.Entry(search_frame)
+        self.search_entry.pack(side=tk.LEFT, padx=5)
+        self.search_entry.bind("<KeyRelease>", self.searchContacts)
+
         # dodanie click listenera
         self.contactsListbox.bind("<<ListboxSelect>>", self.handleContactSelection)
 
@@ -41,7 +52,6 @@ class ContactsBook:
         self.rootMain.mainloop()
 
     def addContact(self):
-
         def submit():
             try:
                 # Pobieranie danych z inputów
@@ -49,8 +59,11 @@ class ContactsBook:
                 surname = entry2.get()
                 phoneNumber = int(entry3.get())
 
-                # Dodanie kontaktu do listy
                 self.contactsList.append(Contact(name, surname, phoneNumber))
+                try:
+                    self.saveToFile()
+                except:
+                    print("Error in saving file")
                 print("Contact added successfully.")
 
                 toTheHomePage()
@@ -59,10 +72,9 @@ class ContactsBook:
 
         def toTheHomePage():
             # Powrót do strony głównej
+            self.fillContactsListbox()
             self.homePage.pack()
             self.addContactPage.pack_forget()
-            self.fillContactsListbox()
-            self.printContacts()
 
         # Chowanie poprzedniej strony
         self.homePage.pack_forget()
@@ -92,11 +104,18 @@ class ContactsBook:
         clear_button.grid(row=3, column=1, padx=5, pady=5)
 
     # Zapełnienie listy kontaktów
-    def fillContactsListbox(self):
+
+    def fillContactsListbox(self, search_query=""):
+        # odświeżenie wyświetlanej listy
         self.contactsListbox.delete(0, tk.END)
         for contact in self.contactsList:
+            if search_query.lower() in (contact.name + " " + contact.surname).lower():
                 self.contactsListbox.insert(tk.END, f"{contact.name} {contact.surname}")
 
+    def searchContacts(self, event):
+        search_query = self.search_entry.get()
+        self.fillContactsListbox(search_query)
+        
     def handleContactSelection(self, event):
         selected_index = self.contactsListbox.curselection()
         if selected_index:
@@ -105,12 +124,44 @@ class ContactsBook:
             print(f"Selected Contact: {selectedContact.name} {selectedContact.uuid}")
 
     def manageContact(self, contactData):
+        def submit():
+            try:
+                # Pobieranie danych z inputów
+                name = entry1.get()
+                surname = entry2.get()
+                phoneNumber = int(entry3.get())
+
+                for contact in self.contactsList:
+                    if contact.uuid == contactData.uuid:
+                        contact.name = name
+                        contact.surname = surname
+                        contact.phoneNumber = phoneNumber
+                try:
+                    self.saveToFile()
+                except:
+                    print("Error in saving file")
+                print("Contact added successfully.")
+
+                toTheHomePage()
+            except:
+                tkMessageBox.showwarning("Warning", "Incorrect information")
+
         def toTheHomePage():
             # Powrót do strony głównej
+            self.fillContactsListbox()
             self.homePage.pack()
             self.manageContactPage.pack_forget()
-            self.fillContactsListbox()
-            self.printContacts()
+
+        def deleteContact():
+            for contact in self.contactsList:
+                if contact.uuid == contactData.uuid:
+                    self.contactsList.remove(contact)
+                    try:
+                        self.saveToFile()
+                    except:
+                        print("Error in saving file")
+                    print("Contact added successfully.")
+            toTheHomePage()
 
         # Chowanie poprzedniej strony
         self.homePage.pack_forget()
@@ -136,15 +187,30 @@ class ContactsBook:
         entry3.grid(row=2, column=1, padx=5, pady=5)
 
         # Przyciski
-        save_button = tk.Button(self.manageContactPage, text="Save changes", command="")
-        save_button.grid(row=3, column=0, padx=5, pady=5)
+        submit_button = tk.Button(self.manageContactPage, text="Save changes", command=submit)
+        submit_button.grid(row=3, column=0, padx=5, pady=5)
 
-        delete_button = tk.Button(self.manageContactPage, text="Delete contact", command="")
-        delete_button.grid(row=3, column=1, padx=5, pady=5)
+        clear_button = tk.Button(self.manageContactPage, text="Delete contact", command=deleteContact)
+        clear_button.grid(row=3, column=1, padx=5, pady=5)
 
-        return_button = tk.Button(self.manageContactPage, text="Return", command=toTheHomePage)
-        return_button.grid(row=3, column=2, padx=5, pady=5)
+        clear_button = tk.Button(self.manageContactPage, text="Return", command=toTheHomePage)
+        clear_button.grid(row=3, column=2, padx=5, pady=5)
 
     def printContacts(self):
         for n in self.contactsList:
             print(f"{n.name} \n{n.surname}")
+
+    def readFromFile(self):
+        contacts = []
+        try:
+            with open("contacts.json", "r") as file:
+                    data = json.load(file)
+                    for contact in data:
+                        contacts.append(Contact(contact['name'], contact['surname'], contact['phoneNumber']))
+        except:
+            print("File is empty")
+        return contacts
+    def saveToFile(self):
+        with open("contacts.json", "w") as saveFile:
+            json.dump(self.contactsList, saveFile, default=lambda x: x.__dict__)
+
