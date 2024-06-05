@@ -71,7 +71,7 @@ class ContactsBook:
                 tkMessageBox.showwarning("Warning", "Incorrect information")
 
         def toTheHomePage():
-            # Powrót do strony głównej
+            # Powrót do strony głównej   //
             self.fillContactsListbox()
             self.homePage.pack()
             self.addContactPage.pack_forget()
@@ -113,6 +113,7 @@ class ContactsBook:
                 self.contactsListbox.insert(tk.END, f"{contact.name} {contact.surname}")
 
     def searchContacts(self, event):
+        # pobranie z inputa wyszukiwanego kontaktu
         search_query = self.search_entry.get()
         self.fillContactsListbox(search_query)
         
