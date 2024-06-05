@@ -104,6 +104,7 @@ class ContactsBook:
         clear_button.grid(row=3, column=1, padx=5, pady=5)
 
     # Zapełnienie listy kontaktów
+
     def fillContactsListbox(self, search_query=""):
         # odświeżenie wyświetlanej listy
         self.contactsListbox.delete(0, tk.END)
@@ -114,6 +115,7 @@ class ContactsBook:
     def searchContacts(self, event):
         search_query = self.search_entry.get()
         self.fillContactsListbox(search_query)
+        
     def handleContactSelection(self, event):
         selected_index = self.contactsListbox.curselection()
         if selected_index:
@@ -211,3 +213,4 @@ class ContactsBook:
     def saveToFile(self):
         with open("contacts.json", "w") as saveFile:
             json.dump(self.contactsList, saveFile, default=lambda x: x.__dict__)
+
