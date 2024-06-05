@@ -31,6 +31,9 @@ class ContactsBook:
         self.contactsListbox.pack(padx=40, pady=40)
         self.fillContactsListbox()
 
+        # dodanie click listenera
+        self.contactsListbox.bind("<<ListboxSelect>>", self.handleContactSelection)
+
         add_button = tk.Button(self.homePage, text="Add Contact", command=self.addContact)
         add_button.pack(pady=10)
 
@@ -93,6 +96,55 @@ class ContactsBook:
         self.contactsListbox.delete(0, tk.END)
         for contact in self.contactsList:
                 self.contactsListbox.insert(tk.END, f"{contact.name} {contact.surname}")
+
+    def handleContactSelection(self, event):
+        selected_index = self.contactsListbox.curselection()
+        if selected_index:
+            selectedContact = self.contactsList[selected_index[0]]
+            self.manageContact(selectedContact)
+            print(f"Selected Contact: {selectedContact.name} {selectedContact.uuid}")
+
+    def manageContact(self, contactData):
+        def toTheHomePage():
+            # Powrót do strony głównej
+            self.homePage.pack()
+            self.manageContactPage.pack_forget()
+            self.fillContactsListbox()
+            self.printContacts()
+
+        # Chowanie poprzedniej strony
+        self.homePage.pack_forget()
+        self.manageContactPage.pack()
+
+        # Utworzenie inputów
+        label1 = tk.Label(self.manageContactPage, text="Name:")
+        label1.grid(row=0, column=0, padx=5, pady=5)
+        entry1 = tk.Entry(self.manageContactPage)
+        entry1.insert(0, contactData.name)
+        entry1.grid(row=0, column=1, padx=5, pady=5)
+
+        label2 = tk.Label(self.manageContactPage, text="Surname:")
+        label2.grid(row=1, column=0, padx=5, pady=5)
+        entry2 = tk.Entry(self.manageContactPage)
+        entry2.insert(0, contactData.surname)
+        entry2.grid(row=1, column=1, padx=5, pady=5)
+
+        label3 = tk.Label(self.manageContactPage, text="Phone Number:")
+        label3.grid(row=2, column=0, padx=5, pady=5)
+        entry3 = tk.Entry(self.manageContactPage)
+        entry3.insert(0, contactData.phoneNumber)
+        entry3.grid(row=2, column=1, padx=5, pady=5)
+
+        # Przyciski
+        save_button = tk.Button(self.manageContactPage, text="Save changes", command="")
+        save_button.grid(row=3, column=0, padx=5, pady=5)
+
+        delete_button = tk.Button(self.manageContactPage, text="Delete contact", command="")
+        delete_button.grid(row=3, column=1, padx=5, pady=5)
+
+        return_button = tk.Button(self.manageContactPage, text="Return", command=toTheHomePage)
+        return_button.grid(row=3, column=2, padx=5, pady=5)
+
     def printContacts(self):
         for n in self.contactsList:
             print(f"{n.name} \n{n.surname}")
