@@ -144,6 +144,7 @@ class ContactsBook:
 
         return_button = tk.Button(self.manageContactPage, text="Return", command=toTheHomePage)
         return_button.grid(row=3, column=2, padx=5, pady=5)
+
     def printContacts(self):
         for n in self.contactsList:
             print(f"{n.name} \n{n.surname}")
