@@ -131,6 +131,12 @@ class ContactsBook:
         self.fillContactsListbox(search_query)
         
     def handleContactSelection(self, event):
+        """
+        Obsługuje wybór kontaktu z listy kontaktów.
+
+        Parametry:
+        event: Wydarzenie związane z wyborem kontaktu.
+        """
         selected_index = self.contactsListbox.curselection()
         if selected_index:
             selectedContact = self.contactsList[selected_index[0]]
@@ -215,6 +221,12 @@ class ContactsBook:
             print(f"{n.name} \n{n.surname}")
 
     def readFromFile(self):
+        """
+        Odczytuje kontakty z pliku "contacts.json" i zwraca je jako listę obiektów Contact.
+
+        Zwraca:
+        list: Lista obiektów Contact.
+        """
         contacts = []
         try:
             with open("contacts.json", "r") as file:
@@ -225,6 +237,9 @@ class ContactsBook:
             print("File is empty")
         return contacts
     def saveToFile(self):
+        """
+        Zapisuje bieżącą listę kontaktów do pliku "contacts.json".
+        """
         with open("contacts.json", "w") as saveFile:
             json.dump(self.contactsList, saveFile, default=lambda x: x.__dict__)
 
