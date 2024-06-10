@@ -6,12 +6,17 @@ import json
 
 class ContactsBook:
     def __init__(self):
+        """
+        Inicjalizuje instancję klasy ContactsBook, odczytuje kontakty z pliku i tworzy główne okno aplikacji.
+        """
         print(self.readFromFile())
         self.contactsList = self.readFromFile()
         self.createMainWindow()
 
     def createMainWindow(self):
-        # utworzenie okna
+        """
+        Tworzy i konfiguruje główne okno oraz strony interfejsu graficznego (GUI).
+        """
         self.rootMain = tk.Tk()
         self.rootMain.title("Contacts App")
         self.rootMain.geometry("360x800")
@@ -52,6 +57,9 @@ class ContactsBook:
         self.rootMain.mainloop()
 
     def addContact(self):
+        """
+        Dodaje nowy kontakt do listy kontaktów i aktualizuje interfejs użytkownika.
+        """
         def submit():
             try:
                 # Pobieranie danych z inputów
@@ -113,6 +121,12 @@ class ContactsBook:
                 self.contactsListbox.insert(tk.END, f"{contact.name} {contact.surname}")
 
     def searchContacts(self, event):
+        """
+        Wyszukuje kontakty na podstawie wprowadzonego tekstu w pasku wyszukiwania.
+
+        Parametry:
+        event: Wydarzenie związane z naciśnięciem klawisza.
+        """
         search_query = self.search_entry.get()
         self.fillContactsListbox(search_query)
         
