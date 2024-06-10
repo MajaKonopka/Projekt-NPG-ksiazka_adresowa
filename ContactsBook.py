@@ -6,12 +6,17 @@ import json
 
 class ContactsBook:
     def __init__(self):
+        """
+        Inicjalizuje instancję klasy ContactsBook, odczytuje kontakty z pliku i tworzy główne okno aplikacji.
+        """
         print(self.readFromFile())
         self.contactsList = self.readFromFile()
         self.createMainWindow()
 
     def createMainWindow(self):
-        # utworzenie okna
+        """
+        Tworzy i konfiguruje główne okno oraz strony interfejsu graficznego (GUI).
+        """
         self.rootMain = tk.Tk()
         self.rootMain.title("Contacts App")
         self.rootMain.geometry("360x800")
@@ -52,6 +57,9 @@ class ContactsBook:
         self.rootMain.mainloop()
 
     def addContact(self):
+        """
+        Dodaje nowy kontakt do listy kontaktów i aktualizuje interfejs użytkownika.
+        """
         def submit():
             try:
                 # Pobieranie danych z inputów
@@ -113,10 +121,22 @@ class ContactsBook:
                 self.contactsListbox.insert(tk.END, f"{contact.name} {contact.surname}")
 
     def searchContacts(self, event):
+        """
+        Wyszukuje kontakty na podstawie wprowadzonego tekstu w pasku wyszukiwania.
+
+        Parametry:
+        event: Wydarzenie związane z naciśnięciem klawisza.
+        """
         search_query = self.search_entry.get()
         self.fillContactsListbox(search_query)
         
     def handleContactSelection(self, event):
+        """
+        Obsługuje wybór kontaktu z listy kontaktów.
+
+        Parametry:
+        event: Wydarzenie związane z wyborem kontaktu.
+        """
         selected_index = self.contactsListbox.curselection()
         if selected_index:
             selectedContact = self.contactsList[selected_index[0]]
@@ -201,6 +221,12 @@ class ContactsBook:
             print(f"{n.name} \n{n.surname}")
 
     def readFromFile(self):
+        """
+        Odczytuje kontakty z pliku "contacts.json" i zwraca je jako listę obiektów Contact.
+
+        Zwraca:
+        list: Lista obiektów Contact.
+        """
         contacts = []
         try:
             with open("contacts.json", "r") as file:
@@ -211,6 +237,9 @@ class ContactsBook:
             print("File is empty")
         return contacts
     def saveToFile(self):
+        """
+        Zapisuje bieżącą listę kontaktów do pliku "contacts.json".
+        """
         with open("contacts.json", "w") as saveFile:
             json.dump(self.contactsList, saveFile, default=lambda x: x.__dict__)
 
