@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Frame
+from tkinter import Frame, PhotoImage
 from tkinter import messagebox as tkMessageBox
 from Contact import Contact
 import json
@@ -19,19 +19,33 @@ class ContactsBook:
         """
         self.rootMain = tk.Tk()
         self.rootMain.title("Contacts App")
-        self.rootMain.geometry("360x800")
+        self.rootMain.geometry("400x800")
+        self.rootMain.configure(bg="light blue")
 
         # utworzenie strony głównej
         self.homePage = Frame(self.rootMain)
         self.homePage.pack()
+        self.homePage.configure(bg="light blue")
+
+        #zmiana koloru oraz dodawanie podpisu
+        self.label = tk.Label(self.homePage, text="Ksiazka Adresowa - Projekt NPG", font=('Comic Sans MS', 15), bg='light green', fg='black')
+        self.label.pack(pady=10)
+
+        #dodanie obrazu
+        obrazek = PhotoImage(file="telefon.png")
+        self.obrazek = tk.Label(self.homePage, image=obrazek)
+        self.obrazek.pack(pady=0)
+
 
         # utworzenie strony dodawania
         self.addContactPage = Frame(self.rootMain)
         self.addContactPage.pack()
+        self.addContactPage.configure(bg="light blue")
 
         # utworzenie strony zarządzania kontaktem
         self.manageContactPage = Frame(self.rootMain)
         self.manageContactPage.pack()
+        self.manageContactPage.configure(bg="light blue")
 
         # utworzenie miejsca na liste kontaktów
         self.contactsListbox = tk.Listbox(self.homePage)
@@ -46,6 +60,7 @@ class ContactsBook:
         self.search_entry = tk.Entry(search_frame)
         self.search_entry.pack(side=tk.LEFT, padx=5)
         self.search_entry.bind("<KeyRelease>", self.searchContacts)
+
 
         # dodanie click listenera
         self.contactsListbox.bind("<<ListboxSelect>>", self.handleContactSelection)
